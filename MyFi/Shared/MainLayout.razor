@@ -1,0 +1,44 @@
+﻿@inherits LayoutComponentBase
+@inject NavigationManager navManager
+
+<PageTitle>MyFi</PageTitle>
+
+<div class="page">
+
+    <AuthorizeView>
+        <Authorized>
+            <div class="sidebar">
+                <NavMenu />
+            </div>
+        </Authorized>
+        <NotAuthorized>
+            @{
+                try
+                {
+                    var hasJSRuntime = navManager != null && (navManager.GetType()?.GetProperty("HasAttachedJSRuntime") != null ?
+                        (bool)navManager.GetType().GetProperty("HasAttachedJSRuntime").GetValue(navManager) : true);
+
+                    if (hasJSRuntime)
+                    {
+                        navManager.NavigateTo("/Identity/Account/Login", true);
+                    }
+                }
+                catch
+                {
+                    <NavLink href="Identity/Account/Login">Redirect to Login</NavLink>
+                }
+            }
+        </NotAuthorized>
+    </AuthorizeView>
+
+    <main>
+        <div class="top-row px-4 auth">
+            <LoginDisplay />
+        </div>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
+

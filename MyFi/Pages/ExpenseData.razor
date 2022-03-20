@@ -1,0 +1,65 @@
+﻿@page "/expenses/{Type}"
+
+@if (Type != "personal" && Type != "shared")
+{
+    <PageTitle>Not found</PageTitle>
+    <p role="alert">Sorry, there's nothing at this address.</p>
+}
+else
+{
+    if (Type == "personal")
+    {
+        <PageTitle>Personal Expenses</PageTitle>
+        <h2>Personal Expenses</h2>
+    }
+    else
+    {
+        <PageTitle>Shared Expenses</PageTitle>
+        <h2>Shared Expenses</h2>
+    }
+
+    <MonthSelect Callback="Month_Selected"></MonthSelect>
+    @if (expenses == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Amount</th>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var expense in expenses)
+                {
+                    <tr>
+                        <td>@expense.Description</td>
+                        <td>@Common.FormatUSD((double)expense.Amount * splitPercentage)</td>
+                        <td>@expense.Date.ToString("M/dd/yy")</td>
+                        <td>@expense.Type.Description</td>
+                        <td>
+                            <div class="btn-group">
+                                <NavLink class="btn btn-secondary btn-sm" href="@($"expenses/{Type}/edit/{expense.Id}")">
+                                    Edit
+                                </NavLink>
+                                <button type="button" class="btn btn-danger btn-sm" @onclick="() => DeleteExpense_Click(expense)">
+                                    Delete
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <NavLink class="btn btn-primary" href="@($"expenses/{Type}/edit")">@($"Add {Type} expense")</NavLink>
+    }
+
+    <Confirm @ref="DeleteConfirmation" ConfirmationChanged="ConfirmDelete_Click"></Confirm>
+    <ConfirmResult @ref="DeleteConfirmResult" OnClosed="ConfirmResult_Click"></ConfirmResult>
+}

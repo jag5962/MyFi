@@ -1,0 +1,115 @@
+﻿@page "/savings"
+
+<PageTitle>Savings</PageTitle>
+<h2>Savings</h2>
+
+<MonthSelect Callback="Month_Selected"></MonthSelect>
+@if (savings == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Website</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var saving in savings)
+            {
+                <tr>
+                    <td>@saving.Default.Description</td>
+                    <td>@saving.Default.Type.Description</td>
+                    <td>@Common.FormatUSD(saving.Amount)</td>
+                    @if (!string.IsNullOrWhiteSpace(saving.Default.Website))
+                    {
+                        <td><a href="@saving.Default.Website">link</a></td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                    <td>
+                        <div class="btn-group">
+                            <NavLink class="btn btn-secondary btn-sm" href="@($"savings/edit/{saving.Id}")">
+                                Edit
+                            </NavLink>
+                            <button type="button" class="btn btn-danger btn-sm" @onclick="() => DeleteSavings_Click(saving)">
+                                Delete
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @if (savingsDefaults != null && savingsDefaults.Count() > 0)
+    {
+        <NavLink class="btn btn-primary table-btn" href="savings/edit">Add savings</NavLink>
+    }
+}
+
+<br />
+<br />
+<br />
+<br />
+<br />
+
+<h2>Defaults</h2>
+@if (savingsDefaults == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Website</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var savingsDefault in savingsDefaults)
+            {
+                <tr>
+                    <td>@savingsDefault.Description</td>
+                    <td>@savingsDefault.Type.Description</td>
+                    <td>@Common.FormatUSD(savingsDefault.DefaultAmount)</td>
+                    @if (!string.IsNullOrWhiteSpace(savingsDefault.Website))
+                    {
+                        <td><a href="@savingsDefault.Website">link</a></td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                    <td>
+                        <div class="btn-group">
+                            <NavLink class="btn btn-secondary btn-sm" href="@($"savingsdefault/edit/{savingsDefault.Id}")">
+                                Edit
+                            </NavLink>
+                            <button style="display:@(savingsDefault.Savings.Count() == 0 ? "inline-block" : "none");"
+                                    type="button" class="btn btn-danger btn-sm" @onclick="() => DeleteDefault_Click(savingsDefault)">
+                                Delete
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <NavLink class="btn btn-primary table-btn" href="savingsdefault/edit">Add default</NavLink>
+}
+
+<Confirm @ref="DeleteConfirmation" ConfirmationChanged="ConfirmDelete_Click"></Confirm>
+<ConfirmResult @ref="DeleteConfirmResult" OnClosed="ConfirmResult_Click"></ConfirmResult>

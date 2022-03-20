@@ -1,0 +1,38 @@
+﻿<EditForm Model="selectedMonth">
+    <InputDate Type="InputDateType.Month" Value="selectedMonth.Selection" ValueExpression="()=>selectedMonth.Selection"
+               ValueChanged="(DateTime d) => MakeSelection(d)" />
+</EditForm>
+
+@code {
+    [Parameter]
+    public EventCallback<SelectedMonth> Callback { get; set; }
+
+    public SelectedMonth selectedMonth = new SelectedMonth();
+
+    private async Task MakeSelection(DateTime selectedDate)
+    {
+        selectedMonth.Selection = selectedDate;
+        await Callback.InvokeAsync(selectedMonth);
+    }
+
+    public class SelectedMonth
+    {
+        public DateTime Selection { get; set; } = DateTime.Today;
+        public DateOnly StartOfMonth
+        {
+            get
+            {
+                return DateOnly.FromDateTime(new DateTime(Selection.Year, Selection.Month, 1));
+            }
+        }
+        public DateOnly EndOfMonth
+        {
+            get
+            {
+                return DateOnly.FromDateTime(new DateTime(Selection.Year, Selection.Month,
+                    DateTime.DaysInMonth(Selection.Year, Selection.Month)));
+            }
+        }
+    }
+
+}

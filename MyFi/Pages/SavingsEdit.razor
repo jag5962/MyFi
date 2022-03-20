@@ -1,0 +1,48 @@
+﻿@page "/savings/edit/{Id:int?}"
+
+@if (!Saved)
+{
+    <section class="savings-edit">
+        @if (Id == 0)
+        {
+            <PageTitle>Add Savings</PageTitle>
+            <h2 class="page-title">Add Savings</h2>
+        }
+        else
+        {
+            <PageTitle>Edit Savings</PageTitle>
+            <h2 class="page-title">Edit Savings</h2>
+        }
+        <EditForm Model="Savings" OnValidSubmit="@HandleValidSubmit" OnInvalidSubmit="@HandleInvalidSubmit">
+            <DataAnnotationsValidator />
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="description">Description</label>
+                    <InputSelect id="description" Value="Savings.SavingsDefaultId" ValueExpression="()=>Savings.SavingsDefaultId"
+                                 ValueChanged="(int id) => DefaultSelected(id)" class="form-control">
+                        @foreach (var savingsDefault in SavingsDefaults)
+                        {
+                            <option value="@savingsDefault.Id">@savingsDefault.Description</option>
+                        }
+                    </InputSelect>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="amount">Amount</label>
+                    <InputNumber id="amount" @bind-Value="Savings.Amount" class="form-control" />
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="month">Month</label>
+                    <InputDate id="month" @bind-Value="Savings.Month" Type="InputDateType.Month" class="form-control" />
+                </div>
+            </div>
+            <br />
+            <button type="submit" class="btn btn-primary edit-btn">Save</button>
+        </EditForm>
+    </section>
+}
+else
+{
+    <EditResult StatusClass="@StatusClass" Message="@Message" BackHRef="savings" AgainHRef="@($"savings/edit/{Id}")" />
+}

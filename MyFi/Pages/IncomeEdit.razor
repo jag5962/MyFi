@@ -1,0 +1,62 @@
+﻿@page "/income/edit/{Id:int?}"
+
+@if (!Saved)
+{
+    @if (Id == 0)
+    {
+        <PageTitle>Add Income</PageTitle>
+        <h2 class="page-title">Add Income</h2>
+    }
+    else
+    {
+        <PageTitle>Edit Income</PageTitle>
+        <h2 class="page-title">Edit Income</h2>
+    }
+    <EditForm Model="Income" OnValidSubmit="@HandleValidSubmit" OnInvalidSubmit="@HandleInvalidSubmit">
+        <DataAnnotationsValidator />
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="description">Description</label>
+                <InputText id="description" @bind-Value="Income.Description" class="form-control" />
+            </div>
+            <div class="form-group col-md-6">
+                <label for="type">Type</label>
+                <InputSelect id="type" @bind-Value="Income.IncomeTypeId" class="form-control">
+                    @foreach (var incomeType in IncomeTypes)
+                    {
+                        <option value="@incomeType.Id">@incomeType.Description</option>
+                    }
+                </InputSelect>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="defaultpay">Paycheck Amount</label>
+                <InputNumber id="defaultpay" @bind-Value="Income.DefaultPay" class="form-control" />
+            </div>
+            @if (Id == 0 && Income.IncomeTypeId == 1 && Income.DefaultPay != null)
+            {
+                <div class="form-group col-md-6">
+                    <label for="firstpaydate">First Paycheck Date</label>
+                    <InputDate id="firstpaydate" @bind-Value="FirstPayDate" class="form-control" />
+                </div>
+            }
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="annualgrosspay">Annual Gross Pay</label>
+                <InputNumber id="annualgrosspay" @bind-Value="Income.AnnualGrossPay" class="form-control" />
+            </div>
+            <div class="form-group col-md-6">
+                <label for="website">Website</label>
+                <InputText id="website" @bind-Value="Income.Website" class="form-control" />
+            </div>
+        </div>
+        <br />
+        <button type="submit" class="btn btn-primary edit-btn">Save</button>
+    </EditForm>
+}
+else
+{
+    <EditResult StatusClass="@StatusClass" Message="@Message" BackHRef="income" AgainHRef="@($"income/edit/{Id}")"/>
+}

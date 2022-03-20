@@ -1,0 +1,26 @@
+﻿<div class="alert @StatusClass">@Message</div>
+<NavLink class="btn btn-primary" href="@BackHRef">Back</NavLink>
+@if (StatusClass == "alert-danger")
+{
+    <button class="btn btn-secondary" style="margin-left: 10px;" onclick="@TryAgain_Click">
+        Try Again
+    </button>
+}
+
+@code {
+    [Parameter]
+    public string StatusClass { get; set; }
+    [Parameter]
+    public string Message { get; set; }
+    [Parameter]
+    public string BackHRef { get; set; }
+    [Parameter]
+    public string AgainHRef { get; set; }
+
+    [Inject]
+    private NavigationManager NavigationManager { get; set; }
+
+    private void TryAgain_Click() {
+        NavigationManager.NavigateTo(AgainHRef, true);
+    }
+}

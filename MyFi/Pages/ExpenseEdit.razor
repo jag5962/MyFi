@@ -1,0 +1,73 @@
+﻿@page "/expenses/{Type}/edit/{Id:int?}"
+
+@if (Type != "personal" && Type != "shared")
+{
+    <PageTitle>Not found</PageTitle>
+    <p role="alert">Sorry, there's nothing at this address.</p>
+}
+else
+{
+    @if (!Saved)
+    {
+        @if (Id == 0)
+        {
+            if (Type == "personal")
+            {
+                <PageTitle>Add Personal Expense</PageTitle>
+                <h2 class="page-title">Add Personal Expense</h2>
+            }
+            else
+            {
+                <PageTitle>Add Shared Expense</PageTitle>
+                <h2 class="page-title">Add Shared Expense</h2>
+            }
+        }
+        else
+        {
+            if (Type == "personal")
+            {
+                <PageTitle>Edit Personal Expense</PageTitle>
+                <h2 class="page-title">Add Personal Expense</h2>
+            }
+            else
+            {
+                <PageTitle>Edit Shared Expense</PageTitle>
+                <h2 class="page-title">Add Shared Expense</h2>
+            }
+        }
+        <EditForm Model="Expense" OnValidSubmit="@HandleValidSubmit" OnInvalidSubmit="@HandleInvalidSubmit">
+            <DataAnnotationsValidator />
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="description">Description</label>
+                    <InputText id="description" @bind-Value="Expense.Description" class="form-control" />
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="amount">Amount</label>
+                    <InputNumber id="amount" @bind-Value="Expense.Amount" class="form-control col-sm-8" />
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="date">Date</label>
+                    <InputDate id="date" @bind-Value="Expense.Date" class="form-control" />
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="type">Type</label>
+                    <InputSelect id="type" @bind-Value="Expense.ExpenseTypeId" class="form-control">
+                        @foreach (var expenseType in ExpenseTypes)
+                        {
+                            <option value="@expenseType.Id">@expenseType.Description</option>
+                        }
+                    </InputSelect>
+                </div>
+            </div>
+            <br />
+            <button type="submit" class="btn btn-primary edit-btn">Save</button>
+        </EditForm>
+    }
+    else
+    {
+        <EditResult StatusClass="@StatusClass" Message="@Message" BackHRef="@($"expenses/{Type}")" AgainHRef="@($"expenses/{Type}/edit/{Id}")" />
+    }
+}

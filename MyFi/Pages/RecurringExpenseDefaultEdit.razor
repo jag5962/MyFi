@@ -1,0 +1,55 @@
+﻿@page "/expenses/recurringdefault/edit/{Id:int?}"
+
+@if (!Saved)
+{
+    @if (Id == 0)
+    {
+        <PageTitle>Add Recurring Expense Default</PageTitle>
+        <h1 class="page-title">Add Recurring Expense Default</h1>
+    }
+    else
+    {
+        <PageTitle>Edit Recurring Expense Default</PageTitle>
+        <h1 class="page-title">Edit Recurring Expense Default</h1>
+    }
+    <EditForm Model="RecurringExpenseDefault" OnValidSubmit="@HandleValidSubmit" OnInvalidSubmit="@HandleInvalidSubmit">
+        <DataAnnotationsValidator />
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="description">Description</label>
+                <InputText id="description" @bind-Value="RecurringExpenseDefault.Description" class="form-control" placeholder="Description" />
+            </div>
+            <div class="form-group col-md-6">
+                <label for="type">Type</label>
+                <InputSelect id="type" @bind-Value="RecurringExpenseDefault.RecurringExpenseTypeId" class="form-control" placeholder="Type">
+                    @foreach (var recurringExpenseType in RecurringExpenseTypes)
+                    {
+                        <option value="@recurringExpenseType.Id">@recurringExpenseType.Description</option>
+                    }
+                </InputSelect>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="defaultamount">Amount</label>
+                <InputNumber id="defaultamount" @bind-Value="RecurringExpenseDefault.DefaultAmount" class="form-control" placeholder="Default Amount" />
+            </div>
+            <div class="form-group col-md-6">
+                <label for="website">Website</label>
+                <InputText id="website" @bind-Value="RecurringExpenseDefault.Website" class="form-control" placeholder="Website URL" />
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="form-check">
+                <InputCheckbox id="shared" class="form-check-input" @bind-Value="RecurringExpenseDefault.Shared" />
+                <label class="form-check-label" for="shared">Shared</label>
+            </div>
+        </div>
+        <br />
+        <button type="submit" class="btn btn-primary">Save</button>
+    </EditForm>
+}
+else
+{
+    <EditResult StatusClass="@StatusClass" Message="@Message" BackHRef="expenses/recurring" AgainHRef="@($"expenses/recurringdefault/edit/{Id}")" />
+}

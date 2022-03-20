@@ -1,0 +1,24 @@
+﻿@page "/"
+
+<PageTitle>Summary</PageTitle>
+
+<AuthorizeView>
+    <Authorized>
+        <h2>Summary</h2>
+        <MonthSelect Callback="Month_Selected"></MonthSelect>
+        <h4><u>Monthly Income</u></h4>
+        <p>@Common.FormatUSD(MonthlyIncome)</p>
+        <h4><u>Recurring Expenses</u></h4>
+        <p>@Common.FormatUSD(RecurringExpenses)</p>
+        <h4><u>Monthly Savings</u></h4>
+        <p>@Common.FormatUSD(MonthlySavings)</p>
+        <h4><u>Available Balance</u></h4>
+        <p>@Common.FormatUSD(MonthlyIncome - RecurringExpenses - MonthlySavings)</p>
+        <h4><u>Shared Expenses</u></h4>
+        <p>@Common.FormatUSD(SharedExpenses)</p>
+        <h4><u>Personal Expenses</u></h4>
+        <p>@Common.FormatUSD(PersonalExpenses)</p>
+        <h4><u>Free Balance</u></h4>
+        <p>@Common.FormatUSD(MonthlyIncome - RecurringExpenses - MonthlySavings - SharedExpenses - PersonalExpenses)</p>
+    </Authorized>
+</AuthorizeView>

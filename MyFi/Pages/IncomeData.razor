@@ -1,0 +1,117 @@
+﻿@page "/income"
+
+<PageTitle>Income</PageTitle>
+<h2>Pay</h2>
+
+<MonthSelect Callback="Month_Selected"></MonthSelect>
+@if (pays == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th>Amount</th>
+                <th>Date</th>
+                <th>Website</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var pay in pays)
+            {
+                <tr>
+                    <td>@pay.IncomeSource.Description</td>
+                    <td>@Common.FormatUSD(pay.Amount)</td>
+                    <td>@pay.Date.ToString("M/dd/yy")</td>
+                    @if (!string.IsNullOrWhiteSpace(pay.IncomeSource.Website))
+                    {
+                        <td><a href="@pay.IncomeSource.Website">link</a></td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                    <td>
+                        <div class="btn-group">
+                            <NavLink class="btn btn-secondary btn-sm" href="@($"pay/edit/{pay.Id}")">
+                                Edit
+                            </NavLink>
+                            <button type="button" class="btn btn-danger btn-sm" @onclick="() => DeletePay_Click(pay)">
+                                Delete
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @if (incomes != null && incomes.Count() > 0)
+    {
+        <NavLink class="btn btn-primary" href="pay/edit">Add pay</NavLink>
+    }
+}
+
+<br />
+<br />
+<br />
+<br />
+<br />
+
+<h2>Income Source</h2>
+@if (incomes == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th>Paycheck Amount</th>
+                <th>Annual Gross</th>
+                <th>Type</th>
+                <th>Website</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var income in incomes)
+            {
+                <tr>
+                    <td>@income.Description</td>
+                    <td>@Common.FormatUSD(income.DefaultPay)</td>
+                    <td>@Common.FormatUSD(income.AnnualGrossPay)</td>
+                    <td>@income.Type.Description</td>
+                    @if (!string.IsNullOrWhiteSpace(income.Website))
+                    {
+                        <td><a href="@income.Website">link</a></td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                    <td>
+                        <div class="btn-group">
+                            <NavLink class="btn btn-secondary btn-sm" href="@($"income/edit/{income.Id}")">
+                                Edit
+                            </NavLink>
+                            <button style="display:@(income.Pays.Count() == 0 ? "inline-block" : "none");"
+                                    type="button" class="btn btn-danger btn-sm" @onclick="() => DeleteIncome_Click(income)">
+                                Delete
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <NavLink class="btn btn-primary table-btn" href="income/edit">Add income</NavLink>
+}
+
+<Confirm @ref="DeleteConfirmation" ConfirmationChanged="ConfirmDelete_Click"></Confirm>
+<ConfirmResult @ref="DeleteConfirmResult" OnClosed="ConfirmResult_Click"></ConfirmResult>

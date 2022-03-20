@@ -1,0 +1,47 @@
+﻿@page "/pay/edit/{Id:int?}"
+@using MyFi.Shared
+
+@if (!Saved)
+{
+    @if (Id == 0)
+    {
+        <PageTitle>Add Pay</PageTitle>
+        <h2 class="page-title">Add Pay</h2>
+    }
+    else
+    {
+        <PageTitle>Edit Pay</PageTitle>
+        <h2 class="page-title">Edit Pay</h2>
+    }
+    <EditForm Model="Pay" OnValidSubmit="@HandleValidSubmit" OnInvalidSubmit="@HandleInvalidSubmit">
+        <DataAnnotationsValidator />
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="income">Income</label>
+                <InputSelect id="income" Value="Pay.IncomeId" ValueExpression="()=>Pay.IncomeId"
+                             ValueChanged="(int id) => DefaultSelected(id)" class="form-control">
+                    @foreach (var income in Incomes)
+                    {
+                        <option value="@income.Id">@income.Description</option>
+                    }
+                </InputSelect>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="amount">Amount</label>
+                <InputNumber id="amount" @bind-Value="Pay.Amount" class="form-control" />
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="date">Date</label>
+                <InputDate id="date" @bind-Value="Pay.Date" class="form-control" />
+            </div>
+        </div>
+        <br />
+        <button type="submit" class="btn btn-primary edit-btn">Save</button>
+    </EditForm>
+}
+else
+{
+    <EditResult StatusClass="@StatusClass" Message="@Message" BackHRef="income" AgainHRef="@($"pay/edit/{Id}")" />
+}

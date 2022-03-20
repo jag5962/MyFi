@@ -1,0 +1,126 @@
+﻿@page "/expenses/recurring"
+
+<PageTitle>Recurring Expenses</PageTitle>
+<h2>Recurring Expenses</h2>
+
+<MonthSelect Callback="Month_Selected"></MonthSelect>
+@if (recurringExpenses == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Shared</th>
+                <th>Website</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var recurringExpense in recurringExpenses)
+            {
+                <tr>
+                    <td>@recurringExpense.Default.Description</td>
+                    <td>@recurringExpense.Default.Type.Description</td>
+                    @if (recurringExpense.Default.Shared)
+                    {
+                        <td>@Common.FormatUSD((double)recurringExpense.Amount * splitPercentage)</td>
+                    }
+                    else
+                    {
+                        <td>@Common.FormatUSD(recurringExpense.Amount)</td>
+                    }
+                    <td class="col-checkbox chkColumn quarter" style="align-content: center;">
+                        <input type="checkbox" checked="@recurringExpense.Default.Shared" disabled />
+                    </td>
+                    @if (!string.IsNullOrWhiteSpace(recurringExpense.Default.Website))
+                    {
+                        <td><a href="@recurringExpense.Default.Website">link</a></td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                    <td>
+                        <div class="btn-group">
+                            <NavLink class="btn btn-secondary btn-sm" href="@($"expenses/recurring/edit/{recurringExpense.Id}")">
+                                Edit
+                            </NavLink>
+                            <button type="button" class="btn btn-danger btn-sm" @onclick="() => DeleteRecurringExpense_Click(recurringExpense)">
+                                Delete
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<br />
+<br />
+<br />
+<br />
+<br />
+
+<h2>Defaults</h2>
+@if (recurringExpenseDefaults == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Shared</th>
+                <th>Website</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var recurringExpenseDefault in recurringExpenseDefaults)
+            {
+                <tr>
+                    <td>@recurringExpenseDefault.Description</td>
+                    <td>@recurringExpenseDefault.Type.Description</td>
+                    <td>@Common.FormatUSD(recurringExpenseDefault.DefaultAmount)</td>
+                    <td class="col-checkbox chkColumn quarter" style="align-content: center;">
+                        <input type="checkbox" checked="@recurringExpenseDefault.Shared" disabled />
+                    </td>
+                    @if (!string.IsNullOrWhiteSpace(recurringExpenseDefault.Website))
+                    {
+                        <td><a href="@recurringExpenseDefault.Website">link</a></td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                    <td>
+                        <div class="btn-group">
+                            <NavLink class="btn btn-secondary btn-sm" href="@($"expenses/recurringdefault/edit/{recurringExpenseDefault.Id}")">
+                                Edit
+                            </NavLink>
+                            <button style="display:@(recurringExpenseDefault.RecurringExpenses.Count() == 0 ? "inline-block" : "none");"
+                                    type="button" class="btn btn-danger btn-sm" @onclick="() => DeleteDefault_Click(recurringExpenseDefault)">
+                                Delete
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <NavLink class="btn btn-primary table-btn" href="expenses/recurringdefault/edit">Add default</NavLink>
+}
+
+<Confirm @ref="DeleteConfirmation" ConfirmationChanged="ConfirmDelete_Click"></Confirm>
+<ConfirmResult @ref="DeleteConfirmResult" OnClosed="ConfirmResult_Click"></ConfirmResult>
