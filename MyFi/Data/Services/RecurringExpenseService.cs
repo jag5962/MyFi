@@ -28,6 +28,10 @@ public class RecurringExpenseService : IRecurringExpenseService
     public async Task<RecurringExpense> GetRecurringExpenseByIdAsync(int id) =>
         await context.RecurringExpenses.Include(r => r.Default).SingleAsync(r => r.Id == id);
 
+    public async Task<IEnumerable<RecurringExpense>> GetAllSharedRecurringExpenseByMonthAsync(DateOnly month) =>
+        await context.RecurringExpenses.Where(r => r.Default.Shared && month == r.Month)
+        .Include(r => r.Default).Include(r => r.Default.Type).ToListAsync();
+
     public async Task<bool> AddRecurringExpenseAsync(RecurringExpense recurringExpense, string username) {
         recurringExpense.Username = username;
         await context.RecurringExpenses.AddAsync(recurringExpense);

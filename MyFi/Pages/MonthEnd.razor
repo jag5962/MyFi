@@ -1,0 +1,165 @@
+﻿@page "/monthend"
+
+<PageTitle>Month End</PageTitle>
+<h2>Month End</h2>
+
+<MonthSelect Callback="Month_Selected"></MonthSelect>
+@if (recurringExpenses == null || sharedExpenses == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <br />
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Marielys's Split</th>
+                <th>John's Split</th>
+                <th>Total</th>
+                @if (owedToJohn >= 0)
+                {
+                    <th>Transfer to John</th>
+                }
+                else
+                {
+                    <th>Transfer to Marielys</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>@Common.FormatUSD(marysSplit)</td>
+                <td>@Common.FormatUSD(johnsSplit)</td>
+                <td>@Common.FormatUSD(total)</td>
+                <td><b>@Common.FormatUSD(Math.Abs(owedToJohn.Value))</b></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br />
+
+    <h4>Paid by John</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th>Amount</th>
+                <th>Expense</th>
+                <th>Type</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var recurringExpense in recurringExpenses.Where(r => r.Username == "johnagilb@gmail.com"))
+            {
+                <tr>
+                    <td>@recurringExpense.Default.Description</td>
+                    <td>@Common.FormatUSD(recurringExpense.Amount)</td>
+                    <td>Recurring</td>
+                    <td>@recurringExpense.Default.Type.Description</td>
+                    <td>
+                        <div class="btn-group">
+                            <NavLink class="btn btn-secondary btn-sm" href="@($"expenses/recurring/edit/{recurringExpense.Id}")">
+                                Edit
+                            </NavLink>
+                            <button type="button" class="btn btn-danger btn-sm" @onclick="() => DeleteRecurringExpense_Click(recurringExpense)">
+                                Delete
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            }
+            @foreach (var sharedExpense in sharedExpenses.Where(r => r.Username == "johnagilb@gmail.com"))
+            {
+                <tr>
+                    <td>@sharedExpense.Description</td>
+                    <td>@Common.FormatUSD(sharedExpense.Amount)</td>
+                    <td>Shared</td>
+                    <td>@sharedExpense.Type.Description</td>
+                    <td>
+                        <div class="btn-group">
+                            <NavLink class="btn btn-secondary btn-sm" href="@($"expenses/shared/edit/{sharedExpense.Id}")">
+                                Edit
+                            </NavLink>
+                            <button type="button" class="btn btn-danger btn-sm" @onclick="() => DeleteSharedExpense_Click(sharedExpense)">
+                                Delete
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <th style="text-align:right;">Total:</th>
+                <td>@Common.FormatUSD(johnsTotal)</td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <br />
+
+    <h4>Paid by Marielys</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th>Amount</th>
+                <th>Expense</th>
+                <th>Type</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var recurringExpense in recurringExpenses.Where(r => r.Username == "mrlys_pagan@yahoo.com"))
+            {
+                <tr>
+                    <td>@recurringExpense.Default.Description</td>
+                    <td>@Common.FormatUSD(recurringExpense.Amount)</td>
+                    <td>Recurring</td>
+                    <td>@recurringExpense.Default.Type.Description</td>
+                    <td>
+                        <div class="btn-group">
+                            <NavLink class="btn btn-secondary btn-sm" href="@($"expenses/recurring/edit/{recurringExpense.Id}")">
+                                Edit
+                            </NavLink>
+                            <button type="button" class="btn btn-danger btn-sm" @onclick="() => DeleteRecurringExpense_Click(recurringExpense)">
+                                Delete
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            }
+            @foreach (var sharedExpense in sharedExpenses.Where(r => r.Username == "mrlys_pagan@yahoo.com"))
+            {
+                <tr>
+                    <td>@sharedExpense.Description</td>
+                    <td>@Common.FormatUSD(sharedExpense.Amount)</td>
+                    <td>Shared</td>
+                    <td>@sharedExpense.Type.Description</td>
+                    <td>
+                        <div class="btn-group">
+                            <NavLink class="btn btn-secondary btn-sm" href="@($"expenses/shared/edit/{sharedExpense.Id}")">
+                                Edit
+                            </NavLink>
+                            <button type="button" class="btn btn-danger btn-sm" @onclick="() => DeleteSharedExpense_Click(sharedExpense)">
+                                Delete
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <th style="text-align:right;">Total:</th>
+                <td>@Common.FormatUSD(marysTotal)</td>
+            </tr>
+        </tfoot>
+    </table>
+}
+
+<Confirm @ref="DeleteConfirmation" ConfirmationChanged="ConfirmDelete_Click"></Confirm>
+<ConfirmResult @ref="DeleteConfirmResult" OnClosed="ConfirmResult_Click"></ConfirmResult>

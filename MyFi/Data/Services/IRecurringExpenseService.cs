@@ -8,6 +8,7 @@ public interface IRecurringExpenseService
     Task<IEnumerable<RecurringExpense>> GetUserRecurringExpenseAsync(string username);
     Task<IEnumerable<RecurringExpense>> GetUserRecurringExpenseByMonthAsync(DateOnly month, string username);
     Task<RecurringExpense> GetRecurringExpenseByIdAsync(int id);
+    Task<IEnumerable<RecurringExpense>> GetAllSharedRecurringExpenseByMonthAsync(DateOnly month);
     Task<bool> AddRecurringExpenseAsync(RecurringExpense recurringExpense, string username);
     Task UpdateRecurringExpenseAsync(RecurringExpense recurringExpense);
     Task<bool> DeleteRecurringExpenseAsync(RecurringExpense recurringExpense);
